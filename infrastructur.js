@@ -17,11 +17,26 @@
                 }
             });
             callback(result);
+        } else {
+            callback(null);
         }
 
     };
 
-    window.responseHandler = function(answer) {
-        console.log(answer);
+    window.buildImages = function(answer) {
+        var elements = answer.map(function(file) {
+            return "<img src='./images/" + file + ".jpg' />"
+        });
+        return elements;
+    };
+
+    window.swapChildren = function(selector, nodes) {
+        console.log(nodes);
+        selector.html("");
+        if (nodes !== null) {
+            nodes.forEach(function(node) {
+                selector.append(node);
+            });
+        }
     };
 })(window);
