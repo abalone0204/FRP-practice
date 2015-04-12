@@ -1,4 +1,5 @@
 $(function() {
+    enableSearch('#search');
 
     function enableSearch(nodeId) {
         registerCallback($(nodeId), searchHandler)
@@ -13,9 +14,5 @@ $(function() {
         requestSearch(text, responseHandler);
     };
 
-    function enableSearch(nodeId) {
-        registerCallback($(nodeId), searchHandler);
-    }
-
-    enableSearch('#search');
+    
 });

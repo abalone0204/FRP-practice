@@ -5,7 +5,7 @@
 
 - [參考資料](http://www.infoq.com/cn/articles/functional-reactive-programming)
 
-- 參考資料中的實作案例是由監測輸入欄位，產生real-time搜尋flickr上的照片，本篇文章則會單純以靜態的頁面讀取資料為例。
+- 參考資料中的實作案例是由監測輸入欄位，產生real-time搜尋flickr上的照片並顯示在畫面中，但是這個專案裡面簡化了從Flickr的API去拿圖片的部份。
     
     - Why?
 
@@ -44,7 +44,11 @@ function sampleFunc(arg1, arg2, callback) {
 
 #### Abstraction
 
-> 這個專案中，只需要專注在callback和FRP上面，但你仍然可以對其他部分感興趣，只是裡面的code應該會只處於work around的狀態XD 下面就簡單的介紹一下
+> 這個專案中，不需要去顧慮圖片在server端是怎樣處理的，
+>（事實上在這個簡單的demo中根本就沒有），
+> 只需要專注在callback和FRP上面，
+> 但你仍然可以對其他部分感興趣，
+> 只是裡面的code應該會只處於work-around的狀態XD，下面就簡單的介紹一下其他部分
 
 - `infrastructure.js`：裡面將讀取和搜尋的功能抽象化成為數個function，讓你在`callback.js`及`frp.js`中簡單的使用。
 
@@ -52,6 +56,27 @@ function sampleFunc(arg1, arg2, callback) {
 
 ### Callback版本的圖片搜尋
 
-- 
+- 直接來看`callback.js`
+
+```javascript
+
+// 從這裡出發
+enableSearch('#search');
+
+function enableSearch(nodeId) {
+    registerCallback($(nodeId), searchHandler)
+};
+
+function responseHandler(answer) {
+    var nodes = answer === null ? null : buildImages(answer);
+    swapChildren($('.container'), nodes);
+};
+
+function searchHandler(text) {
+    requestSearch(text, responseHandler);
+};
+
+
+```
 
 
