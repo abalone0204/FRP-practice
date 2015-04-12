@@ -1,4 +1,9 @@
 (function(window) {
+
+    // ===========================
+    // Callback-way infrastructure
+    // ===========================
+
     window.registerCallback = function(node, callback) {
         node.on("input", function() {
             var txt = $(this).val();
@@ -38,4 +43,70 @@
             });
         }
     };
+
+    // ======================
+    // FRP-way infrastructure
+    // ======================
+
+    Object.prototype.extractValueE = function(searchInput) {
+        var text = $(searchInput).val().toLowerCase().replace(/\s/, '-');
+        return text;
+    };
+    Object.prototype.mapE = function(reactiveFunc) {
+        var result = reactiveFunc(this);
+        return result;
+    };
+    Object.prototype.searchRequest = function(text) {
+        var result = FILE_NAMES.filter(function(name) {
+            if (name.match(text)) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+        return result;
+    };
+    Object.prototype.getServiceObjectE = function(req) {
+        var result = FILE_NAMES.filter(function(name) {
+            if (name.match(req)) {
+                return true;
+            } else {
+                return false;
+            }
+        }).map(function(hero){
+            if(hero){
+                return "./images/"+hero+".jpg";
+            }
+        });
+        return result;
+    };
+
+    Object.prototype.createImageNodes = function(nodes) {
+        var imgNodes = nodes.map(function(node){
+            if (node) {
+                return "<img src='"+node+"'/>";
+            }
+        });
+        return imgNodes;
+    };
+
+    window.insertDomE = function(imgNodes, selector){
+        if(imgNodes.length !== 0){
+            selector.html("");
+            imgNodes.forEach(function(imgNode){
+                selector.append(imgNode);
+            });
+        } else {
+            selector.html("");
+        }
+    };
+
+
+
+
+
+
+
+
+
 })(window);

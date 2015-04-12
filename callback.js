@@ -7,7 +7,7 @@ $(function() {
 
     function responseHandler(answer) {
         var nodes = answer === null ? null : buildImages(answer);
-        swapChildren($('.container'), nodes);
+        swapChildren($('#container'), nodes);
     };
 
     function searchHandler(text) {
