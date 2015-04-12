@@ -90,4 +90,10 @@ function responseHandler(answer) {
 
 - node scholl的[stream adventure](https://github.com/substack/stream-adventure)是很棒的入門workshop
 
+- 單看起來好像沒什麼不好的，不過我們能有更好的做法嗎？
+
+----
+
+
+
 
