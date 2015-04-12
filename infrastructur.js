@@ -15,12 +15,22 @@
     };
 
     window.requestSearch = function(text, callback) {
-        var result = text.toLowerCase().replace(/\s/, '-');
-        
-        callback(result);
+        if (text.replace(/\s/, '')) {
+            var comparedText = text.toLowerCase().replace(/\s/, '-');
+            var result = FILE_NAMES.filter(function(name) {
+                if (name.match(comparedText)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+            callback(result);
+
+        }
+
     };
 
-    window.responseHandler = function(element) {
-        console.log(element);
+    window.responseHandler = function(answer) {
+        console.log(answer);
     };
 })(window);
