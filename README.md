@@ -54,7 +54,7 @@ function sampleFunc(arg1, arg2, callback) {
 
 ----
 
-### Callback版本的圖片搜尋
+### Callback版本的圖片搜尋系統
 
 - 直接來看`callback.js`
 
@@ -63,20 +63,31 @@ function sampleFunc(arg1, arg2, callback) {
 // 從這裡出發
 enableSearch('#search');
 
+
 function enableSearch(nodeId) {
+// 先對我們選定的element註冊event handler
+// registerCallback這個function可以在infrastructure.js中找到
     registerCallback($(nodeId), searchHandler)
 };
 
+function searchHandler(text) {
+// 這裡會送出request到requestSearch這個function裡面去處理service知道要我們要搜尋什麼東西
+// 處理完之後會接著執行responseHandler（callback function）
+// 註：在原本的文章中，這裏的request會送到Flickr的server端去
+    requestSearch(text, responseHandler);
+};
+
 function responseHandler(answer) {
+// 這裏會把我們指定區域的圖片
+// 變成剛剛在service那端建好的image節點（stream）
     var nodes = answer === null ? null : buildImages(answer);
     swapChildren($('.container'), nodes);
 };
 
-function searchHandler(text) {
-    requestSearch(text, responseHandler);
-};
-
-
 ```
+
+- 如果不熟悉stream的概念也沒關係，可以先想像成我們把選定區域中的舊資料替換成新的就可以了
+
+- node scholl的[stream adventure](https://github.com/substack/stream-adventure)是很棒的入門workshop
 
 
