@@ -96,34 +96,84 @@ function responseHandler(answer) {
 
 ### FRP版本的Real-time圖片搜尋
 
+
 ```javascript
 
 // 沒錯，第一行仍然是個常見的event handler registration
 // 這裏應該會有更好的寫法
 $("#search").on("input", start);
-//将指定的输入框包装成具有flicker search能力的输入框，
-//并返回相关联的实时图片流
-function makeFlickerImagesStream(searchInput) {
-    //根据指定的搜索输入框内容创建request stream
-    var requestE = extractValueE(searchInput).
-                    mapE(searchRequest);
-    //根据request stream创建response stream
-    var responseE = getServiceObjectE(requestE);
-    //根据response stream创建image DOM stream
-    var imagesE = responseE.mapE(createImageNodes);
-    return imagesE;
-}
 
+// 這是FRP版本的程式主體
 function start() {
-    //创建一个实时图片流，流中的内容根据"search"输入框内容的变化而变化
+// this指的是$("#search")選取的東西
+// 我們把它傳到下個function去造出圖片的資料流（節點）
     var imageNodes = makeFlickerImagesStream(this);
-    //用imageNodes图片流里的内容动态更新images节点
+
+// 接著我們把剛剛造出來的image nodes放在我們想要它在的位置上
     insertDomE(imageNodes, $("#container"));
 }
 
 
+
+function makeFlickerImagesStream(searchInput) {
+    // 首先是把剛剛在input欄位輸入得值先抓出來，
+    // 然後再轉成 service能處理的request
+    var requestE = extractValueE(searchInput).
+                    mapE(searchRequest);
+    // 下一步是將request丟過去service處理並拿回response
+    // 可以想成這裡就是拿到圖片的url
+    var responseE = getServiceObjectE(requestE);
+    // 最後一步，就是簡單的按照前面response的資料流
+    // 創造img節點（一堆img tag）
+    var imagesE = responseE.mapE(createImageNodes);
+    return imagesE;
+}
 ```
 
+- 乍看之下程式碼長度並沒有與callback版本差很多，而且FRP的方式看起來比較不習慣。
 
+- 沒錯，實作上的話，可能習慣寫callback的人還會覺得前一個開發出來比較快，所以我們討論下面的情況：
+
+    - 假設你是一個不知道內部怎麼實現的使用者（事實上如果你沒看infrastructure.js這支檔案的話你就是）。
+
+    - 現在我們認為黑寡婦(Black Widow)的照片太辣了，要將其屏蔽掉，在兩種做法中該怎麼做呢？
+
+
+### Callback 版本的變動
+
+```javascript
+enableSearch('#search');
+```
+
+- 這裏是我們可以改變的部分，對於使用者來說其他部分都是一片未知的
+
+- 所以我們「可能」會去對內部的程式做變動，在callback這樣的風格下，我們通常就是在`enableSearch`中加上一個callback function，把在更動後丟出來的東西丟到這個`customizeHandler`裡面。是不是開始聞到一些壞味道了呢？
+
+```javascript
+enableSearch('#search', customizeHandler);
+```
+
+### FRP 版本的變動
+
+- 相較於callback版本，FRP的進入點相對透明非常多：
+
+```javascript
+function start() {
+    var imageNodes = makeFlickerImagesStream(this);
+    insertDomE(imageNodes, $("#container"));
+}
+```
+
+- 我們現在已經拿到images的資料流，可以再運用這一點直接在start中對資料流做更動。
+
+```javascript
+function start() {
+    var imageNodes = makeFlickerImagesStream(this);
+    var healthyImageNodes = filterE(imageNodes);
+    insertDomE(imageNodes, $("#container"));
+}
+```
+
+- 有沒有開始覺得在這個(需求)瞬息萬變的世界，FRP是不是一個不錯的想法呢？
 
 

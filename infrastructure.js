@@ -58,6 +58,7 @@
     };
     Object.prototype.searchRequest = function(text) {
         var result = FILE_NAMES.filter(function(name) {
+            console.log(name.match(text));
             if (name.match(text)) {
                 return true;
             } else {
@@ -67,13 +68,7 @@
         return result;
     };
     Object.prototype.getServiceObjectE = function(req) {
-        var result = FILE_NAMES.filter(function(name) {
-            if (name.match(req)) {
-                return true;
-            } else {
-                return false;
-            }
-        }).map(function(hero){
+        var result = req.map(function(hero){
             if(hero){
                 return "./images/"+hero+".jpg";
             }
