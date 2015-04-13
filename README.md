@@ -3,6 +3,8 @@
 
 - 以下簡稱FRP
 
+- 這次的案例是從下方的參考資料中改寫而來，省去了與Flickr端溝通的部分，我認為這樣能更透徹的看到FRP的特性
+
 - [參考資料](http://www.infoq.com/cn/articles/functional-reactive-programming)
 
 - 參考資料中的實作案例是由監測輸入欄位，產生real-time搜尋flickr上的照片並顯示在畫面中，但是這個專案裡面簡化了從Flickr的API去拿圖片的部份。
